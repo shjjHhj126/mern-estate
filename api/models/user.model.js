@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 //{ timestamps: true }:record create and update time
 const userSchema = new mongoose.Schema(
   {
-    user: {
+    username: {
       type: String,
       required: true,
       unique: true,
@@ -22,6 +22,6 @@ const userSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const User = mongoose.model("User", userSchema);
+const User = mongoose.model("User", userSchema); //auto create users in db cuz "User"
 
-export default User;
+module.exports = User;
