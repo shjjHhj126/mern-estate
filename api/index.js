@@ -26,3 +26,15 @@ app.listen(3000, () => {
 //Routes
 app.use("/api/user", userRouter); //'api/user' is the base path. It acts as a prefix for userRouter.When a request is made to the server with a URL that starts with /api/user, Express will match it to this middleware, and the middleware function will be executed.
 app.use("/api/auth", authRouter);
+
+//middleware for handling error
+//use next to go to the next middleware
+app.use((err, req, res, next) => {
+  const statusCode = err.statusCode || 500;
+  const message = err.message || "Internal Server Error";
+  return res.status(statusCode).json({
+    success: false,
+    message: message,
+    statusCode,
+  });
+});
