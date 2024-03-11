@@ -6,11 +6,10 @@ const errorHandler = require("../utils/error");
 const signup = async (req, res, next) => {
   const { username, email, password } = req.body;
 
-  //hash the password:hashSync already include await, no need to type await
-  console.log(process.env.SECRET);
-  const hashedPassword = bcryptjs.hashSync(password, 10);
-  const newUser = new User({ username, email, password: hashedPassword });
   try {
+    //hash the password:hashSync already include await, no need to type await
+    const hashedPassword = bcryptjs.hashSync(password, 10);
+    const newUser = new User({ username, email, password: hashedPassword });
     await newUser.save();
     res.status(201).json("user created successfully"); //201 means created
   } catch (err) {

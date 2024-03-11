@@ -6,6 +6,10 @@ import SignIn from "./pages/SignIn";
 import Profile from "./pages/Profile";
 import About from "./pages/About";
 import Header from "./components/Header";
+import axios from "axios";
+
+axios.defaults.baseURL = "http://localhost:3000";
+axios.defaults.withCredentials = true;
 
 export default function App() {
   //<Header /> put just under <BrowserRouter> so that the Header component shows in every pages
