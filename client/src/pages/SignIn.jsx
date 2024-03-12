@@ -1,12 +1,18 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useSelector, useDispatch } from "react-redux"; //useSelector to read data from the store, useDispatch to dispatch actions
+import {
+  signInStart,
+  signInSuccess,
+  signInFailure,
+} from "../redux/user/userSlice";
 
 export default function SignIn() {
   const [formData, setFormData] = useState({}); //{}:initial value
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const { loading, error } = useSelector((state) => state.user); //(state) => state.user: set the initial state as initialState
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleChange = (e) => {
     setFormData({
@@ -18,22 +24,18 @@ export default function SignIn() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      setLoading(true);
+      dispatch(signInStart());
       const res = await axios.post("/api/auth/signin", formData, {
         headers: {
           "Content-Type": "application/json", // Specify the Content-Type header
         },
         body: JSON.stringify(formData),
       });
-      console.log(res.data);
-      setLoading(false);
-      setError(null);
+      dispatch(signInSuccess(res.data));
       navigate("/"); //go to another page
     } catch (err) {
       //err.response.data.message:axios's way to get self-defined error structure in the backend(error handling middleware)
-      console.log(err.response.data.message);
-      setError(err.response.data.message); //self defined error structure in the backend(error handling middleware)
-      setLoading(false);
+      dispatch(signInFailure(err.response.data.message));
     }
   };
 
