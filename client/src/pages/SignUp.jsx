@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
-export default function Signup() {
+export default function SignUp() {
   const [formData, setFormData] = useState({}); //{}:initial value
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -26,7 +26,6 @@ export default function Signup() {
         body: JSON.stringify(formData),
       });
       console.log(res.data);
-      console.log("hello");
       setLoading(false);
       setError(null);
       navigate("/sign-in"); //go to another page
@@ -41,7 +40,7 @@ export default function Signup() {
   return (
     //mx-auto:center the element horizontally within its parent .
     <div className="p-3 max-w-lg mx-auto">
-      <h1 className="text-3xl text-center font-semibold my-7">Signup</h1>
+      <h1 className="text-3xl text-center font-semibold my-7">Sign Up</h1>
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <input
           type="text"
