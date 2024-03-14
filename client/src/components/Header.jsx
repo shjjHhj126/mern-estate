@@ -1,7 +1,9 @@
 import { FaSearch } from "react-icons/fa"; //fa:font awesome
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 export default function Header() {
+  const { currentUser } = useSelector((state) => state.user);
   return (
     //className is how u add CSS classes to components
     //text-sm, for mobile, defaultly. sm:text-xl, for bigger window, sm means at the small breakpoint, bigger than sm display...
@@ -37,8 +39,14 @@ export default function Header() {
             About
           </li>
         </Link>
-        <Link to="/sign-in">
-          <li className="text-slate-700 hover:underline">Sign in</li>
+        <Link to="/profile" alt="profile">
+          {currentUser ? (
+            <img
+              className="rounded-full h-7 w-7 object-cover"
+              src={currentUser.avatar}></img>
+          ) : (
+            <li className="text-slate-700 hover:underline">Sign in</li>
+          )}
         </Link>
       </ul>
     </header>

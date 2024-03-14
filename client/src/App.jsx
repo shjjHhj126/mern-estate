@@ -7,6 +7,7 @@ import Profile from "./pages/Profile";
 import About from "./pages/About";
 import Header from "./components/Header";
 import axios from "axios";
+import PrivateRoute from "./components/PrivateRoute";
 
 axios.defaults.baseURL = "http://localhost:3000";
 axios.defaults.withCredentials = true;
@@ -20,10 +21,19 @@ export default function App() {
         <Route path="/" element={<Home />} />
         <Route path="/sign-up" element={<SignUp />} />
         <Route path="/sign-in" element={<SignIn />} />
-        <Route path="/profile" element={<Profile />} />
         <Route path="/about" element={<About />} />
+
+        <Route path="/" element={<PrivateRoute />}>
+          <Route path="/profile" element={<Profile />} />
+        </Route>
       </Routes>
     </BrowserRouter>
   );
 }
 //path in <Route>:When the current URL matches the specified path pattern, the associated component specified in the element prop will be rendered.
+
+// <Route element={<PrivateRoute />}>
+//   <Route path="/profile" element={<Profile />} />
+// </Route>
+// The PrivateRoute component is used to protect the /profile route
+// When the root path is accessed, it determines whether to render the child routes based on the authentication status.

@@ -31,8 +31,7 @@ export default function OAuth() {
           },
         }
       );
-      //res is correct but the persist does not changed
-      dispatch(signInSuccess(result));
+      dispatch(signInSuccess(res.data)); //store the info in persist
       navigate("/");
     } catch (err) {
       console.log("could not sign in with google", err);
