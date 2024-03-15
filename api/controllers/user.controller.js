@@ -27,6 +27,7 @@ const updateUser = async (req, res, next) => {
     );
 
     const { password, ...rest } = updatedUser._doc;
+
     res.status(200).json(rest);
   } catch (err) {
     next(err);
