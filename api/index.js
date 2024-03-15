@@ -3,6 +3,7 @@ const dotenv = require("dotenv");
 const mongoose = require("mongoose");
 const userRouter = require("./routes/user.route");
 const authRouter = require("./routes/auth.route");
+const cookieParser = require("cookie-parser");
 const cors = require("cors");
 dotenv.config();
 
@@ -25,6 +26,7 @@ app.use(
     credentials: true,
   })
 ); //default:allow from anywhere
+app.use(cookieParser());
 
 app.listen(3000, () => {
   console.log("Server is running on port 3000!");
