@@ -15,6 +15,9 @@ import {
   deleteUserFailure,
   deleteUserStart,
   deleteUserSuccess,
+  logOutStart,
+  logOutFailure,
+  logOutSuccess,
 } from "../redux/user/userSlice";
 import axios from "axios";
 
@@ -59,7 +62,7 @@ export default function Profile() {
       },
       async () => {
         const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-        await setFormData({ ...formData, avatar: downloadURL });
+        setFormData({ ...formData, avatar: downloadURL });
 
         const res1 = await axios.post(
           `/api/user/update/${currentUser._id}`,
@@ -129,6 +132,22 @@ export default function Profile() {
       dispatch(deleteUserFailure(err.response.data.message));
     }
   };
+  const handleLogOut = async () => {
+    try {
+      dispatch(logOutStart());
+      console.log("ghjkl");
+      const res1 = await axios.get("/api/auth/logout");
+      const res = res1.data;
+      console.log(res);
+      if (res.success === false) {
+        dispatch(logOutFailure(res.message));
+        return;
+      }
+      dispatch(logOutSuccess(res));
+    } catch (err) {
+      dispatch(logOutFailure(err.response.data.message));
+    }
+  };
 
   return (
     <div className="p-3 max-w-lg mx-auto">
@@ -193,7 +212,9 @@ export default function Profile() {
           className="text-red-700 cursor-pointer">
           Delete account
         </span>
-        <span className="text-red-700 cursor-pointer">Log out</span>
+        <span onClick={handleLogOut} className="text-red-700 cursor-pointer">
+          Log out
+        </span>
       </div>
       <p className="text-red-700 mt-5">{error ? error : ""}</p>
       <p className="text-green-700 mt-5">
