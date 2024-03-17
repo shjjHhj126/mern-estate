@@ -135,9 +135,9 @@ export default function Profile() {
   const handleLogOut = async () => {
     try {
       dispatch(logOutStart());
-      console.log("ghjkl");
       const res1 = await axios.get("/api/auth/logout");
       const res = res1.data;
+
       console.log(res);
       if (res.success === false) {
         dispatch(logOutFailure(res.message));

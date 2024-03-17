@@ -52,7 +52,7 @@ const userSlice = createSlice({
       state.loading = true;
     },
     logOutSuccess: (state, action) => {
-      state.currentUser = action.payload; //additional info come with action
+      state.currentUser = null;
       state.loading = false;
       state.error = null;
     },
