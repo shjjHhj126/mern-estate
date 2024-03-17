@@ -25,6 +25,7 @@ const signin = async (req, res, next) => {
   try {
     //check if the email exists
     const validUser = await User.findOne({ email });
+
     if (!validUser) return next(errorHandler(404, "User not found!"));
 
     //check the password is correct or not

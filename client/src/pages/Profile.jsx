@@ -12,6 +12,9 @@ import {
   updateUserStart,
   updateUserSuccess,
   updateUserFailure,
+  deleteUserFailure,
+  deleteUserStart,
+  deleteUserSuccess,
 } from "../redux/user/userSlice";
 import axios from "axios";
 
@@ -25,7 +28,6 @@ export default function Profile() {
   const [formData, setFormData] = useState({});
   const [updateSuccess, setUpdateSuccess] = useState(false);
   const dispatch = useDispatch();
-  console.log(error);
 
   // firebase storage
   // allow read;
@@ -55,10 +57,27 @@ export default function Profile() {
       (error) => {
         setFileUploadErr(true);
       },
-      () => {
-        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-          setFormData({ ...formData, avatar: downloadURL });
-        });
+      async () => {
+        const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+        await setFormData({ ...formData, avatar: downloadURL });
+
+        const res1 = await axios.post(
+          `/api/user/update/${currentUser._id}`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(formData),
+          }
+        );
+        const res = res1.data;
+        if (res.success === false) {
+          dispatch(updateUserFailure(res.message));
+          return;
+        }
+        dispatch(updateUserSuccess(res));
+        setUpdateSuccess(true);
       }
     );
   };
@@ -71,7 +90,7 @@ export default function Profile() {
     e.preventDefault();
     try {
       dispatch(updateUserStart());
-      const res = await axios.post(
+      const res1 = await axios.post(
         `/api/user/update/${currentUser._id}`,
         formData,
         {
@@ -82,15 +101,32 @@ export default function Profile() {
         }
       );
 
-      // if there's error, in the last part of index.js automatically add success value
-      if (res.data.success === false) {
-        dispatch(updateUserFailure(res.data.message));
+      const res = res1.data;
+      if (res.success === false) {
+        dispatch(updateUserFailure(res.message));
         return;
       }
-      dispatch(updateUserSuccess(res.data));
+      dispatch(updateUserSuccess(res));
       setUpdateSuccess(true);
     } catch (err) {
       dispatch(updateUserFailure(err.response.data.message));
+    }
+  };
+
+  const handleDeleteUser = async () => {
+    try {
+      dispatch(deleteUserStart());
+
+      const res1 = await axios.delete(`/api/user/delete/${currentUser._id}`);
+      const res = res1.data;
+      if (res.success === false) {
+        dispatch(deleteUserFailure(res.message));
+        return;
+      }
+      dispatch(deleteUserSuccess(res));
+    } catch (err) {
+      // console.log(err);
+      dispatch(deleteUserFailure(err.response.data.message));
     }
   };
 
@@ -152,7 +188,11 @@ export default function Profile() {
         </button>
       </form>
       <div className="flex justify-between mt-5">
-        <span className="text-red-700 cursor-pointer">Delete account</span>
+        <span
+          onClick={handleDeleteUser}
+          className="text-red-700 cursor-pointer">
+          Delete account
+        </span>
         <span className="text-red-700 cursor-pointer">Sign out</span>
       </div>
       <p className="text-red-700 mt-5">{error ? error : ""}</p>

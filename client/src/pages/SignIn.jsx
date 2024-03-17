@@ -26,13 +26,14 @@ export default function SignIn() {
     e.preventDefault();
     try {
       dispatch(signInStart());
-      const res = await axios.post("/api/auth/signin", formData, {
+      const res1 = await axios.post("/api/auth/signin", formData, {
         headers: {
           "Content-Type": "application/json", // Specify the Content-Type header
         },
         body: JSON.stringify(formData),
       });
-      dispatch(signInSuccess(res.data));
+      const res = res1.data.data;
+      dispatch(signInSuccess(res));
       navigate("/"); //go to another page
     } catch (err) {
       //err.response.data.message:axios's way to get self-defined error structure in the backend(error handling middleware)

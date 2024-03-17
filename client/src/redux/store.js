@@ -1,6 +1,6 @@
-import { combineReducers, configureStore } from "@reduxjs/toolkit";
+import { combineReducers, configureStore } from "@reduxjs/toolkit"; // helps manage the application's state in a global Redux store.
 import userReducer from "./user/userSlice";
-import { persistReducer, persistStore } from "redux-persist";
+import { persistReducer, persistStore } from "redux-persist"; // persist the state across page reloads or browser sessions.
 import storage from "redux-persist/lib/storage";
 
 const rootReducer = combineReducers({ user: userReducer });
