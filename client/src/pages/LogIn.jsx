@@ -3,13 +3,13 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useSelector, useDispatch } from "react-redux"; //useSelector to read data from the store, useDispatch to dispatch actions
 import {
-  signInStart,
-  signInSuccess,
-  signInFailure,
+  logInStart,
+  logInSuccess,
+  logInFailure,
 } from "../redux/user/userSlice";
 import OAuth from "../components/OAuth";
 
-export default function SignIn() {
+export default function LogIn() {
   const [formData, setFormData] = useState({}); //{}:initial value
   const { loading, error } = useSelector((state) => state.user); //(state) => state.user: set the initial state as initialState
   const navigate = useNavigate();
@@ -25,26 +25,26 @@ export default function SignIn() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      dispatch(signInStart());
-      const res1 = await axios.post("/api/auth/signin", formData, {
+      dispatch(logInStart());
+      const res1 = await axios.post("/api/auth/login", formData, {
         headers: {
           "Content-Type": "application/json", // Specify the Content-Type header
         },
         body: JSON.stringify(formData),
       });
       const res = res1.data.data;
-      dispatch(signInSuccess(res));
+      dispatch(logInSuccess(res));
       navigate("/"); //go to another page
     } catch (err) {
       //err.response.data.message:axios's way to get self-defined error structure in the backend(error handling middleware)
-      dispatch(signInFailure(err.response.data.message));
+      dispatch(logInFailure(err.response.data.message));
     }
   };
 
   return (
     //mx-auto:center the element horizontally within its parent .
     <div className="p-3 max-w-lg mx-auto">
-      <h1 className="text-3xl text-center font-semibold my-7">Sign In</h1>
+      <h1 className="text-3xl text-center font-semibold my-7">Log In</h1>
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <input
           type="text"
@@ -61,7 +61,7 @@ export default function SignIn() {
         <button
           disabled={loading}
           className="bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-80 ">
-          {loading ? "Loading..." : "sign in"}
+          {loading ? "Loading..." : "log in"}
         </button>
         <OAuth />
       </form>

@@ -19,7 +19,7 @@ const signup = async (req, res, next) => {
   }
 };
 
-const signin = async (req, res, next) => {
+const login = async (req, res, next) => {
   //get the data from req
   const { email, password } = req.body;
   try {
@@ -86,6 +86,6 @@ const google = async (req, res, next) => {
 
 module.exports = {
   signup,
-  signin,
+  login,
   google,
 };

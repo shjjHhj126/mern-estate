@@ -12,15 +12,15 @@ const userSlice = createSlice({
   initialState,
   reducers: {
     //it's 'reducers' cuz these functions are used for reducing the current state
-    signInStart: (state) => {
+    logInStart: (state) => {
       state.loading = true;
     },
-    signInSuccess: (state, action) => {
+    logInSuccess: (state, action) => {
       state.currentUser = action.payload; //additional info come with action
       state.loading = false;
       state.error = null;
     },
-    signInFailure: (state, action) => {
+    logInFailure: (state, action) => {
       state.error = action.payload;
       state.loading = false;
     },
@@ -52,9 +52,9 @@ const userSlice = createSlice({
 });
 
 export const {
-  signInStart,
-  signInSuccess,
-  signInFailure,
+  logInStart,
+  logInSuccess,
+  logInFailure,
   updateUserStart,
   updateUserSuccess,
   updateUserFailure,

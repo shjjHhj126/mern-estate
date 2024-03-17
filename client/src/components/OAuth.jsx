@@ -5,7 +5,7 @@ import axios from "axios";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
-import { signInSuccess } from "../redux/user/userSlice";
+import { logInSuccess } from "../redux/user/userSlice";
 
 export default function OAuth() {
   const dispatch = useDispatch();
@@ -16,7 +16,7 @@ export default function OAuth() {
       const auth = getAuth(app);
 
       const result = await signInWithPopup(auth, provider);
-      const res = await axios.post(
+      const res1 = await axios.post(
         "/api/auth/google",
         {
           // send the data directly as the second argument to axios.post
@@ -31,7 +31,8 @@ export default function OAuth() {
           },
         }
       );
-      dispatch(signInSuccess(res.data)); //store the info in persist
+      const res = res1.data;
+      dispatch(logInSuccess(res)); //store the info in persist
       navigate("/");
     } catch (err) {
       console.log("could not sign in with google", err);
