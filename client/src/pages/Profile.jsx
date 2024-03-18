@@ -65,16 +65,12 @@ export default function Profile() {
         const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
         setFormData({ ...formData, avatar: downloadURL });
 
-        const res1 = await axios.post(
-          `/api/user/update/${currentUser._id}`,
-          formData,
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(formData),
-          }
-        );
+        const res1 = await axios.post(`/api/user/update/${currentUser._id}`, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        });
         const res = res1.data;
         if (res.success === false) {
           dispatch(updateUserFailure(res.message));
@@ -94,16 +90,12 @@ export default function Profile() {
     e.preventDefault();
     try {
       dispatch(updateUserStart());
-      const res1 = await axios.post(
-        `/api/user/update/${currentUser._id}`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(formData),
-        }
-      );
+      const res1 = await axios.post(`/api/user/update/${currentUser._id}`, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
 
       const res = res1.data;
       if (res.success === false) {
@@ -207,7 +199,7 @@ export default function Profile() {
           {loading ? "Loading..." : "Update"}
         </button>
         <Link
-          className="bg-green-700 p-3 text-white rounded-lg text-center uppercase hover:opacity-95"
+          className="bg-green-700 p-3 text-white rounded-lg text-center uppercase"
           to={"/create-listing"}>
           Create Listing
         </Link>
