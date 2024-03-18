@@ -1,6 +1,7 @@
 const User = require("../models/user.model");
 const errorHandler = require("../utils/error");
 const bcryptjs = require("bcryptjs");
+const Listing = require("../models/listing.model");
 
 const test = (req, res) => {
   res.send("api route is working");
@@ -46,4 +47,17 @@ const deleteUser = async (req, res, next) => {
     next(err);
   }
 };
-module.exports = { test, updateUser, deleteUser };
+const getUserListings = async (req, res, next) => {
+  // console.log(req.user.id);
+  if (req.user.id === req.params.id) {
+    try {
+      const listings = await Listing.find({ userRef: req.params.id });
+      res.status(200).json(listings);
+    } catch (err) {
+      next(err);
+    }
+  } else {
+    return next(errorHandler(401, "You can only view your own listings"));
+  }
+};
+module.exports = { test, updateUser, deleteUser, getUserListings };
