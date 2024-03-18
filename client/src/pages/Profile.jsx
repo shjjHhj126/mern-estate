@@ -159,6 +159,21 @@ export default function Profile() {
     }
   };
 
+  const handleListingDelete = async (listingId) => {
+    try {
+      const res1 = await axios.delete(`/api/listing/delete/${listingId}`);
+      const res = res1.data;
+      if (res.success === false) {
+        console.log(res.message);
+        return;
+      }
+      setListings((prev) =>
+        prev.filter((listing) => listing._id !== listingId)
+      ); //!
+    } catch (err) {
+      console.log(err.response.data.message);
+    }
+  };
   return (
     <div className="p-3 max-w-lg mx-auto">
       <h1 className="text-3xl font-semibold text-center my-7">Profile</h1>
@@ -264,7 +279,12 @@ export default function Profile() {
                   <p>{listing.name}</p>
                 </Link>
                 <div className="flex flex-col items-center">
-                  <button className="text-red-700 uppercase">Delete</button>
+                  <button
+                    onClick={() => handleListingDelete(listing._id)}
+                    className="text-red-700 uppercase">
+                    Delete
+                  </button>
+
                   <button className="text-green-700 uppercase">Edit</button>
                 </div>
               </div>
@@ -278,3 +298,6 @@ export default function Profile() {
 // flex-col:put them vertically
 // for text : text-center, for img: self-center
 // mx-auto:margin-right: auto; margin-left: auto; i.e. to be in center
+
+// onClick={() => handleListingDelete(listing.id)}, this arrow function is
+// used to invoke handleListingDelete(listing.id), so it doesn't take any arguments explicitly.
