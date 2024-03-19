@@ -10,6 +10,7 @@ import UpdateListing from "./pages/UpdateListing";
 import Header from "./components/Header";
 import axios from "axios";
 import PrivateRoute from "./components/PrivateRoute";
+import Listing from "./pages/Listing";
 
 axios.defaults.baseURL = "http://localhost:3000";
 axios.defaults.withCredentials = true;
@@ -24,6 +25,7 @@ export default function App() {
         <Route path="/sign-up" element={<SignUp />} />
         <Route path="/log-in" element={<LogIn />} />
         <Route path="/about" element={<About />} />
+        <Route path="/listing/:listingId" element={<Listing />} />
 
         <Route path="/" element={<PrivateRoute />}>
           <Route path="/profile" element={<Profile />} />
