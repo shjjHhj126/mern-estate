@@ -33,6 +33,7 @@ export default function UpdateListing() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const params = useParams();
+  console.log(formData);
 
   useEffect(() => {
     const fetchListing = async () => {
@@ -261,7 +262,7 @@ export default function UpdateListing() {
               <input
                 className="p-3 border border-gray-300 rounded-lg"
                 type="number"
-                id="bedroom"
+                id="bedrooms"
                 min="1"
                 max="10"
                 required
@@ -273,7 +274,7 @@ export default function UpdateListing() {
               <input
                 className="p-3 border border-gray-300 rounded-lg"
                 type="number"
-                id="bathroom"
+                id="bathrooms"
                 min="1"
                 max="10"
                 required
