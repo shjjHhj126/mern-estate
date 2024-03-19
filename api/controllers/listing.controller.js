@@ -59,4 +59,52 @@ const getListing = async (req, res, next) => {
     next(err);
   }
 };
-module.exports = { createListing, deleteListing, updateListing, getListing };
+const getListings = async (req, res, next) => {
+  try {
+    const limit = parseInt(req.query.limit) || 9;
+    const startIndex = parseInt(req.query.startIndex) || 0;
+    let offer = req.query.offer;
+    let furnished = req.query.furnished;
+    let parking = req.query.parking;
+    let type = req.query.type;
+    const searchTerm = req.query.searchTerm || "";
+    const sort = req.query.sort || "createAt";
+    const order = req.query.order || "desc";
+
+    if (offer === undefined || offer === false) {
+      offer = { $in: [true, false] }; //$in:search inside the database, offer can be both true and false
+    }
+    if (furnished === undefined || furnished === false) {
+      furnished = { $in: [true, false] }; //$in:search inside the database, offer can be both true and false
+    }
+    if (parking === undefined || parking === false) {
+      parking = { $in: [true, false] }; //$in:search inside the database, offer can be both true and false
+    }
+    if (type === undefined || type === "all") {
+      type = { $in: ["sale", "rent"] }; //$in:search inside the database, offer can be both true and false
+    }
+    const listings = await Listing.find({
+      name: { $regex: searchTerm, $options: "i" },
+      offer,
+      furnished,
+      parking,
+      type,
+    })
+      .sort({ [sort]: order })
+      .limit(limit)
+      .skip(startIndex);
+
+    return res.status(200).json(listings);
+  } catch (err) {
+    next(err);
+  }
+};
+module.exports = {
+  createListing,
+  deleteListing,
+  updateListing,
+  getListing,
+  getListings,
+};
+// $options: "i", do not care about the uppercase or lowercase
+// [sort]: order, eg. createAt : desc
