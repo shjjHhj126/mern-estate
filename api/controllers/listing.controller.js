@@ -1,6 +1,7 @@
 const { default: mongoose } = require("mongoose");
 const Listing = require("../models/listing.model");
 const errorHandler = require("../utils/error");
+const { default: axios } = require("axios");
 
 const createListing = async (req, res, next) => {
   try {
@@ -46,4 +47,16 @@ const updateListing = async (req, res, next) => {
     next(err);
   }
 };
-module.exports = { createListing, deleteListing, updateListing };
+const getListing = async (req, res, next) => {
+  try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(404).json({ message: "Listing not found" });
+    }
+
+    const listing = await Listing.findById(req.params.id);
+    res.status(200).json(listing);
+  } catch (err) {
+    next(err);
+  }
+};
+module.exports = { createListing, deleteListing, updateListing, getListing };
