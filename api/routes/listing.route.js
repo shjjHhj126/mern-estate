@@ -9,5 +9,6 @@ const listingRouter = express.Router();
 
 listingRouter.post("/create", verifyToken, createListing);
 listingRouter.delete("/delete/:id", verifyToken, deleteListing);
+listingRouter.post("/create", verifyToken, createListing);
 
 module.exports = listingRouter;

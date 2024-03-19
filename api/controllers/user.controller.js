@@ -9,10 +9,12 @@ const test = (req, res) => {
 const updateUser = async (req, res, next) => {
   if (req.user.id !== req.params.id)
     return next(errorHandler(401, "You can only update your own account!"));
+
   try {
     if (req.body.password) {
       req.body.password = bcryptjs.hashSync(req.body.password, 10);
     }
+
     const updatedUser = await User.findByIdAndUpdate(
       req.params.id,
       {
@@ -26,7 +28,6 @@ const updateUser = async (req, res, next) => {
       },
       { new: true } // if don't add { new: true }, you'll get the prev info
     );
-
     const { password, ...rest } = updatedUser._doc;
 
     res.status(200).json(rest);
