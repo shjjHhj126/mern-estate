@@ -1,9 +1,35 @@
 import { FaSearch } from "react-icons/fa"; //fa:font awesome
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { useEffect, useState } from "react";
 
 export default function Header() {
   const { currentUser } = useSelector((state) => state.user); // useSelector will listen to the change of currentUser
+  const [searchTerm, setSearchTerm] = useState("");
+  const navigate = useNavigate();
+
+  // each time we hit the search icon, it reflect to the query(window.location.search) and redirect to that url
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    // set the new url
+    const urlParams = new URLSearchParams(window.location.search);
+    urlParams.set("searchTerm", searchTerm);
+
+    //navigate to the new url
+    const searchQuery = urlParams.toString();
+    navigate(`/search?${searchQuery}`);
+  };
+
+  // each time we directly change the url, it reflect on the search input
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const searchTermFromUrl = urlParams.get("searchTerm");
+    if (searchTermFromUrl) {
+      setSearchTerm(searchTermFromUrl);
+    }
+  }, [location.search]); // not window.location.search cuz it in rendered within a router context
+
   return (
     //className is how u add CSS classes to components
     //text-sm, for mobile, defaultly. sm:text-xl, for bigger window, sm means at the small breakpoint, bigger than sm display...
@@ -19,12 +45,19 @@ export default function Header() {
             <span className="text-slate-700">Estate</span>
           </h1>
         </Link>
-        <form className="bg-slate-100 p-3 rounded-lg flex items-center">
+        <form
+          onSubmit={handleSubmit}
+          className="bg-slate-100 p-3 rounded-lg flex items-center">
           <input
             type="text"
             placeholder="Search..."
-            className="bg-transparent focus:outline-none w-24 sm:w-64"></input>
-          <FaSearch className="text-slate-600"></FaSearch>
+            className="bg-transparent focus:outline-none w-24 sm:w-64"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+          <button>
+            <FaSearch className="text-slate-600"></FaSearch>
+          </button>
         </form>
       </div>
 
@@ -52,3 +85,9 @@ export default function Header() {
     </header>
   );
 }
+
+// <form onSubmit={}>
+//   <input>...</input>
+//   <button></button>
+// </form>
+// clicking the button will submit the form
