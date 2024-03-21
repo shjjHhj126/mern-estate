@@ -68,16 +68,19 @@ const getListings = async (req, res, next) => {
     let parking = req.query.parking;
     let type = req.query.type;
     const searchTerm = req.query.searchTerm || "";
-    const sort = req.query.sort || "createAt";
+    const sort = req.query.sort || "createdAt";
     const order = req.query.order || "desc";
-
-    if (offer === undefined || offer === false) {
-      offer = { $in: [true, false] }; //$in:search inside the database, offer can be both true and false
+    if (offer === undefined || offer === false || offer === "false") {
+      offer = { $in: [false, true] }; //$in:search inside the database, offer can be both true and false
     }
-    if (furnished === undefined || furnished === false) {
+    if (
+      furnished === undefined ||
+      furnished === false ||
+      furnished === "false"
+    ) {
       furnished = { $in: [true, false] }; //$in:search inside the database, offer can be both true and false
     }
-    if (parking === undefined || parking === false) {
+    if (parking === undefined || parking === false || parking === "false") {
       parking = { $in: [true, false] }; //$in:search inside the database, offer can be both true and false
     }
     if (type === undefined || type === "all") {
