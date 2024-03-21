@@ -80,6 +80,7 @@ const getListings = async (req, res, next) => {
     ) {
       furnished = { $in: [true, false] }; //$in:search inside the database, offer can be both true and false
     }
+
     if (parking === undefined || parking === false || parking === "false") {
       parking = { $in: [true, false] }; //$in:search inside the database, offer can be both true and false
     }
