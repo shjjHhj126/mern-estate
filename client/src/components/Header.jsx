@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 
+//rfc
 export default function Header() {
   const { currentUser } = useSelector((state) => state.user); // useSelector will listen to the change of currentUser
   const [searchTerm, setSearchTerm] = useState("");
