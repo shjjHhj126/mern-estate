@@ -1,18 +1,34 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation } from "swiper/modules";
-import SwiperCore from "swiper"; // to use navigation
-import "swiper/css/bundle";
+import { Link, useNavigate } from "react-router-dom";
+// import { Swiper, SwiperSlide } from "swiper/react";
+// import { Navigation } from "swiper/modules";
+// import SwiperCore from "swiper"; // to use navigation
+// import "swiper/css/bundle";
 import ListingItem from "../components/ListingItem";
+import { FaSearch } from "react-icons/fa"; //fa:font awesome
 
 export default function Home() {
   const [offerListings, setOfferListings] = useState([]);
   const [saleListings, setSaleListings] = useState([]);
   const [rentListings, setRentListings] = useState([]);
-  SwiperCore.use([Navigation]);
-  console.log(offerListings);
+  // SwiperCore.use([Navigation]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const navigate = useNavigate();
+
+  // each time we hit the search icon, it reflect to the query(window.location.search) and redirect to that url
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    // set the new url
+    const urlParams = new URLSearchParams(window.location.search);
+    urlParams.set("searchTerm", searchTerm);
+
+    //navigate to the new url
+    const searchQuery = urlParams.toString();
+    navigate(`/search?${searchQuery}`);
+  };
+
   useEffect(() => {
     const fetchOfferListings = async () => {
       try {
@@ -49,40 +65,31 @@ export default function Home() {
   return (
     <div>
       {/* top*/}
-      <div className="flex flex-col gap-6 p-28 px-3 max-w-6xl mx-auto">
-        <h1 className="text-slate-700 font-bold text-3xl lg:text-6xl">
-          Find your <span className="text-slate-500">perfect</span>
-          <br />
-          place with ease
-        </h1>
-        <div className="text-gray-400 text-xs sm:text-sm">
-          Sherry Estate is the best place to find your next perfect place to
-          live.
-          <br />
-          We have a wide range of properties for you to choose from.
+      <div className="relative flex items-center justify-center">
+        <img
+          src="https://assets-global.website-files.com/619e763bb3de7b56e6107aeb/61f2b0e1f0a732ae15de4d98_open-house-ideas-header-image-scaled.jpeg"
+          alt="loading home image..."
+          className="h-[250px] sm:h-[500px] object-cover w-full mx-auto brightness-75 "></img>
+        <div className="absolute flex flex-col items-center z-10 w-full px-4 sm:w-1/2">
+          <p className="text-white sm:text-4xl text-2xl  font-serif font-bold ">
+            Agents. Tours. Loans. Homes.
+          </p>
+          <form
+            onSubmit={handleSubmit}
+            className="bg-slate-100 sm:p-7 p-2 rounded-lg w-full flex flex-row items-center mt-3 sm:mt-7">
+            <input
+              type="text"
+              placeholder="Search..."
+              className="bg-transparent focus:outline-none w-full sm:w-auto flex-grow "
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+            <button>
+              <FaSearch className="text-blue-500  text-md sm:text-2xl" />
+            </button>
+          </form>
         </div>
-        <Link
-          to={"/search"}
-          className="text-xs sm:text-sm text-blue-800 font-bold hover:underline">
-          Let's get started...
-        </Link>
       </div>
-
-      {/* swiper*/}
-      <Swiper navigation>
-        {offerListings &&
-          offerListings.length > 0 &&
-          offerListings.map((listing) => (
-            <SwiperSlide key={listing._id}>
-              <div
-                style={{
-                  background: `url(${listing.imageUrls[0]}) center no-repeat`,
-                  backgroundSize: "cover",
-                }}
-                className="h-[500px]"></div>
-            </SwiperSlide>
-          ))}
-      </Swiper>
 
       {/* listing results for offer, sale and rent*/}
       <div className="max-w-6xl mx-auto p-3 flex flex-col gap-8 my-10">
