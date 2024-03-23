@@ -1,7 +1,10 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ListingItem from "../components/ListingItem";
+import "mapbox-gl/dist/mapbox-gl.css";
+import mapboxgl from "mapbox-gl";
+import mapboxSdk from "@mapbox/mapbox-sdk/services/geocoding";
 
 export default function Search() {
   const [sidebardata, setSidebardata] = useState({
@@ -15,8 +18,67 @@ export default function Search() {
   });
   const [loading, setLoading] = useState(false);
   const [listings, setListings] = useState([]);
+  // const [positions, setPositions] = useState([]);
   const [showMore, setShowMore] = useState(false);
+  const [map, setMap] = useState(null);
   const navigate = useNavigate();
+  const geocodingClient = mapboxSdk({
+    accessToken: import.meta.env.VITE_MAP_TOKEN,
+  });
+
+  useEffect(() => {
+    mapboxgl.accessToken = import.meta.env.VITE_MAP_TOKEN;
+    const newMap = new mapboxgl.Map({
+      container: "map", // container ID
+      style: "mapbox://styles/mapbox/streets-v12",
+      center: [-74.5, 40],
+      zoom: 9,
+    });
+
+    // Store the map object in state
+    setMap(newMap);
+
+    // Cleanup function to remove the map when the component unmounts
+    return () => {
+      newMap.remove();
+    };
+  }, []); //cleanup function, used when Map is unmounted
+
+  useEffect(() => {
+    if (listings.length === 0 || !map) return;
+
+    const geocodingClient = mapboxSdk({
+      accessToken: import.meta.env.VITE_MAP_TOKEN,
+    });
+
+    const markListingsOnMap = async () => {
+      for (const listing of listings) {
+        const query = `${listing.address}, ${listing.city}, ${listing.country}`;
+
+        try {
+          const response = await geocodingClient
+            .forwardGeocode({
+              query: query,
+              limit: 1,
+            })
+            .send();
+
+          const features = response.body.features;
+
+          if (features && features.length > 0) {
+            const [lng, lat] = features[0].center;
+
+            // Add marker
+            new mapboxgl.Marker().setLngLat([lng, lat]).addTo(map);
+          }
+        } catch (error) {
+          console.log("Error geocoding address:", error);
+        }
+      }
+    };
+
+    markListingsOnMap();
+  }, [listings, map]);
 
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
@@ -52,7 +114,7 @@ export default function Search() {
       const searchQuery = urlParams.toString();
       const res1 = await axios.get(`/api/listing/get?${searchQuery}`);
       const res = res1.data;
-      if (res.length >= 9) {
+      if (res.length >= 8) {
         setShowMore(true);
       } else {
         setShowMore(false);
@@ -114,17 +176,21 @@ export default function Search() {
     const searchQuery = urlParams.toString();
     const res1 = await axios.get(`api/listing/get?${searchQuery}`);
     const res = res1.data;
-    if (res.length < 9) {
+    if (res.length < 8) {
       setShowMore(false);
     }
     setListings([...listings, ...res]);
   };
 
   return (
-    <div className="flex flex-col md:flex-row">
-      <div className="p-7 border-b-2 md:border-r-2 md:min-h-screen">
-        <form onSubmit={handleSubmit} className="flex flex-col gap-8">
-          <div className="flex items-center gap-2">
+    <div className="flex flex-col h-screen">
+      {/*takes up the entire height of the screen*/}
+      {/* Search bar */}
+      <div className="p-7 bg-slate-200 border-b-2 items-center justify-around sticky top-0">
+        <form
+          onSubmit={handleSubmit}
+          className="flex flex-row gap-8 items-center">
+          <div className="flex flex-col gap-2">
             <label className="whitespace-nowrap font-semibold">
               Search Term:
             </label>
@@ -137,70 +203,74 @@ export default function Search() {
               onChange={handleChange}
             />
           </div>
-          <div className="flex gap-2 flex-wrap items-center">
+          <div className="flex gap-2 flex-col">
             <label className="font-semibold">Type:</label>
-            <div className="flex gap-2">
-              <input
-                type="checkbox"
-                id="all"
-                className="w-5"
-                onChange={handleChange}
-                checked={sidebardata.type === "all"}
-              />
-              <span>Rent & Sale</span>
-            </div>
-            <div className="flex gap-2">
-              <input
-                type="checkbox"
-                id="rent"
-                className="w-5"
-                onChange={handleChange}
-                checked={sidebardata.type === "rent"}
-              />
-              <span>Rent</span>
-            </div>
-            <div className="flex gap-2">
-              <input
-                type="checkbox"
-                id="sale"
-                className="w-5"
-                onChange={handleChange}
-                checked={sidebardata.type === "sale"}
-              />
-              <span>Sale</span>
-            </div>
-            <div className="flex gap-2">
-              <input
-                type="checkbox"
-                id="offer"
-                className="w-5"
-                onChange={handleChange}
-                checked={sidebardata.offer}
-              />
-              <span>Offer</span>
+            <div className="flex flex-row gap-2">
+              <div className="flex gap-2">
+                <input
+                  type="checkbox"
+                  id="all"
+                  className="w-5"
+                  onChange={handleChange}
+                  checked={sidebardata.type === "all"}
+                />
+                <span>Rent & Sale</span>
+              </div>
+              <div className="flex gap-2">
+                <input
+                  type="checkbox"
+                  id="rent"
+                  className="w-5"
+                  onChange={handleChange}
+                  checked={sidebardata.type === "rent"}
+                />
+                <span>Rent</span>
+              </div>
+              <div className="flex gap-2">
+                <input
+                  type="checkbox"
+                  id="sale"
+                  className="w-5"
+                  onChange={handleChange}
+                  checked={sidebardata.type === "sale"}
+                />
+                <span>Sale</span>
+              </div>
+              <div className="flex gap-2">
+                <input
+                  type="checkbox"
+                  id="offer"
+                  className="w-5"
+                  onChange={handleChange}
+                  checked={sidebardata.offer}
+                />
+                <span>Offer</span>
+              </div>
             </div>
           </div>
-          <div className="flex gap-2 flex-wrap items-center">
-            <label className="font-semibold">Amenities</label>
-            <div className="flex gap-2">
-              <input
-                type="checkbox"
-                id="parking"
-                className="w-5"
-                onChange={handleChange}
-                checked={sidebardata.parking}
-              />
-              <span>Parking</span>
-            </div>
-            <div className="flex gap-2">
-              <input
-                type="checkbox"
-                id="furnished"
-                className="w-5"
-                onChange={handleChange}
-                checked={sidebardata.furnished}
-              />
-              <span>Furnished</span>
+          <div className="flex gap-2 flex-col">
+            <label className="font-semibold">Amenities:</label>
+            <div className="flex flex-row gap-2">
+              <div className="flex gap-2">
+                <input
+                  type="checkbox"
+                  id="parking"
+                  className="w-5"
+                  onChange={handleChange}
+                  checked={sidebardata.parking}
+                />
+                <span>Parking</span>
+              </div>
+              <div className="flex gap-2">
+                <input
+                  type="checkbox"
+                  id="furnished"
+                  className="w-5"
+                  onChange={handleChange}
+                  checked={sidebardata.furnished}
+                />
+                <span>Furnished</span>
+              </div>
             </div>
           </div>
           <div className="flex items-center gap-2">
@@ -217,36 +287,48 @@ export default function Search() {
               <option value="createdAt_asc">Oldest</option>
             </select>
           </div>
-          <button className="bg-slate-700 text-white p-3 uppercase hover: opacity-95 rounded-lg">
+          <button className="bg-blue-600 text-white p-3 uppercase hover: opacity-95 rounded-lg flex-1 h-12 ">
             search
           </button>
         </form>
       </div>
-      <div className="flex-1">
-        <h1 className="text-3xl font-semibold border-b p-3 text-slate-700 mt-5">
-          Listing results:
-        </h1>
-        <div className="p-7 flex flex-wrap gap-4">
-          {!loading && listings.length === 0 && (
-            <p className="text-xl text-slate-700">No listing found!</p>
-          )}
-          {loading && (
-            <p className="text-xl text-slate-700 text-center w-full">
-              Loading...
-            </p>
-          )}
-          {!loading &&
-            listings &&
-            listings.map((listing) => (
-              <ListingItem key={listing._id} listing={listing} />
-            ))}
-          {showMore && (
-            <button
-              className="text-green-700 hover:underline p-7 text-center"
-              onClick={onShowMoreClick}>
-              Show more
-            </button>
-          )}
+
+      {/* Main content */}
+      <div className="flex flex-row flex-1 overflow-hidden">
+        {/*overflow-hidden: any content overflowing from this container will be hidden. */}
+        <div className="relative flex-1 p-7">
+          {/* relative : in the relative position of its parent */}
+          <div className="absolute inset-0">
+            {/* absolute:be in the absolute position of its parent, the key to be fixed while scrolling 
+            not use fixed cuz "fixed" fix to the viewpoint, not container
+            inset-0:take up all the space */}
+            <div id="map" className="w-full min-h-screen"></div>
+          </div>
+        </div>
+        <div className="flex-1 overflow-auto p-7">
+          {/*overflow-auto:scrolling enabled */}
+          <div className="flex flex-1 flex-wrap gap-4 justify-around">
+            {!loading && listings.length === 0 && (
+              <p className="text-xl text-slate-700">No listing found!</p>
+            )}
+            {loading && (
+              <p className="text-xl text-slate-700 text-center w-full">
+                Loading...
+              </p>
+            )}
+            {!loading &&
+              listings &&
+              listings.map((listing) => (
+                <ListingItem key={listing._id} listing={listing} />
+              ))}
+            {showMore && (
+              <button
+                className="text-green-700 hover:underline p-7 text-center"
+                onClick={onShowMoreClick}>
+                Show more
+              </button>
+            )}
+          </div>
         </div>
       </div>
     </div>

@@ -33,6 +33,7 @@ export default function LogIn() {
         body: JSON.stringify(formData),
       });
       const res = res1.data.data;
+      console.log(res);
       dispatch(logInSuccess(res));
       navigate("/"); //go to another page
     } catch (err) {
@@ -60,7 +61,7 @@ export default function LogIn() {
           onChange={handleChange}></input>
         <button
           disabled={loading}
-          className="bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-80 ">
+          className="bg-blue-500 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-80 ">
           {loading ? "Loading..." : "log in"}
         </button>
         <OAuth />
