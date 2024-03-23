@@ -4,6 +4,7 @@ import { app } from "../firebase";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { FcGoogle } from "react-icons/fc";
 
 import { logInSuccess } from "../redux/user/userSlice";
 
@@ -40,11 +41,13 @@ export default function OAuth() {
   };
   return (
     //type="button", when clicked it, it will not submit the form
+
     <button
-      onClick={handleGoogleClick}
       type="button"
-      className="bg-red-700 text-white p-3 rounded-lg 
-    uppercase hover:opacity-95">
+      onClick={handleGoogleClick}
+      className="border border-spacing-0 border-blue-500 text-blue-500 p-3 rounded-lg 
+  uppercase hover:opacity-95 flex items-center justify-center gap-4">
+      <FcGoogle className="text-3xl" />
       continue with google
     </button>
   );

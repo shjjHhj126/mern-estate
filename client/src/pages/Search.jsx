@@ -18,13 +18,14 @@ export default function Search() {
   });
   const [loading, setLoading] = useState(false);
   const [listings, setListings] = useState([]);
-  // const [positions, setPositions] = useState([]);
+  const [positions, setPositions] = useState([]);
   const [showMore, setShowMore] = useState(false);
   const [map, setMap] = useState(null);
   const navigate = useNavigate();
   const geocodingClient = mapboxSdk({
     accessToken: import.meta.env.VITE_MAP_TOKEN,
   });
+  const address = "1600 Amphitheatre Parkway, Mountain View, CA";
 
   useEffect(() => {
     mapboxgl.accessToken = import.meta.env.VITE_MAP_TOKEN;
@@ -72,7 +73,7 @@ export default function Search() {
             new mapboxgl.Marker().setLngLat([lng, lat]).addTo(map);
           }
         } catch (error) {
-          console.log("Error geocoding address:", error);
+          console.error("Error geocoding address:", error);
         }
       }
     };
