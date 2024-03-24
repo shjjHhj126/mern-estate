@@ -79,3 +79,4 @@ export const {
 } = userSlice.actions;
 
 export default userSlice.reducer;
+// why not userSlice.reducers? cuz redux toolkit generates and returns reducer based on reducers
