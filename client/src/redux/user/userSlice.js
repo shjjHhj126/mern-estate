@@ -63,6 +63,7 @@ const userSlice = createSlice({
   },
 });
 
+// destructuring userSlice.actions and create multiple bindings
 export const {
   logInStart,
   logInSuccess,

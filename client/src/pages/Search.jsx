@@ -25,7 +25,6 @@ export default function Search() {
   const geocodingClient = mapboxSdk({
     accessToken: import.meta.env.VITE_MAP_TOKEN,
   });
-  const address = "1600 Amphitheatre Parkway, Mountain View, CA";
 
   useEffect(() => {
     mapboxgl.accessToken = import.meta.env.VITE_MAP_TOKEN;

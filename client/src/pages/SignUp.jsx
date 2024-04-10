@@ -24,7 +24,6 @@ export default function SignUp() {
         headers: {
           "Content-Type": "application/json", // Specify the Content-Type header
         },
-        body: JSON.stringify(formData),
       });
       console.log(res.data);
       setLoading(false);

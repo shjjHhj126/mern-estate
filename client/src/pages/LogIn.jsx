@@ -30,10 +30,9 @@ export default function LogIn() {
         headers: {
           "Content-Type": "application/json", // Specify the Content-Type header
         },
-        body: JSON.stringify(formData),
       });
       const res = res1.data.data;
-      console.log(res);
+      // console.log(res);
       dispatch(logInSuccess(res));
       navigate("/"); //go to another page
     } catch (err) {
