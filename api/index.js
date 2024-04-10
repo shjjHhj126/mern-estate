@@ -5,6 +5,7 @@ const userRouter = require("./routes/user.route");
 const authRouter = require("./routes/auth.route");
 const listingRouter = require("./routes/listing.route");
 const cookieParser = require("cookie-parser");
+const path = require("path");
 const cors = require("cors");
 
 dotenv.config({ path: "config.env" });
