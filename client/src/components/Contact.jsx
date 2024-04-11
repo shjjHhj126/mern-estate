@@ -13,7 +13,6 @@ export default function Contact({ listing, contact, setContact }) {
         const res1 = await axios.get(`/api/user/${listing.userRef}`);
         const res = res1.data;
         setLandlord(res);
-        setContact(false);
       } catch (err) {
         console.log(err);
       }
@@ -43,6 +42,7 @@ export default function Contact({ listing, contact, setContact }) {
             onChange={onChange}></textarea>
           <Link
             to={`mailto:${landlord.email}?subject=Estate Marketplace Website regarding ${listing.name}&body=${message}`}
+            onClick={() => setContact(false)}
             className=" bg-slate-700 text-white rounded-lg p-3 text-center uppercase hover:opacity-95">
             Send Message
           </Link>
