@@ -230,16 +230,20 @@ export default function Search() {
         "https://mern-estate-pce3.onrender.com" +
           `/api/listing/get?${searchQuery}`
       );
-      const res1 = await axios.get(`/api/listing/get?${searchQuery}`);
-      const res = res1.data;
-      console.log(res);
-      if (res.length >= 8) {
-        setShowMore(true);
-      } else {
-        setShowMore(false);
+      try {
+        const res1 = await axios.get(`/api/listing/get?${searchQuery}`);
+        const res = res1.data;
+        console.log(res);
+        if (res.length >= 8) {
+          setShowMore(true);
+        } else {
+          setShowMore(false);
+        }
+        setListings(res);
+        setLoading(false);
+      } catch (err) {
+        console.log(err.message);
       }
-      setListings(res);
-      setLoading(false);
     };
     fetchListings();
   }, [location.search]);

@@ -60,7 +60,7 @@ const getListing = async (req, res, next) => {
   }
 };
 const getListings = async (req, res, next) => {
-  console.log(req.query);
+  console.log("req.query:", req.query);
   try {
     const limit = parseInt(req.query.limit) || 8;
     const startIndex = parseInt(req.query.startIndex) || 0;
