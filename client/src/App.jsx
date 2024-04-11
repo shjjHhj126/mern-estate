@@ -13,8 +13,8 @@ import PrivateRoute from "./components/PrivateRoute";
 import Listing from "./pages/Listing";
 import Search from "./pages/Search";
 
-axios.defaults.baseURL = "http://localhost:3000";
-// axios.defaults.baseURL = "https://mern-estate-pce3.onrender.com";
+// axios.defaults.baseURL = "http://localhost:3000";
+axios.defaults.baseURL = "https://mern-estate-pce3.onrender.com";
 
 axios.defaults.withCredentials = true;
 
