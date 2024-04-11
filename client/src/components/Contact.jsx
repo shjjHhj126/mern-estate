@@ -27,7 +27,7 @@ export default function Contact({ listing, contact, setContact }) {
   return (
     <>
       {landlord && (
-        <div className="flex flex-col gap-2 p-5">
+        <div className="flex flex-col gap-2 p-5 m-5">
           <p>
             Contact <span className="font-semibold">{landlord.username}</span>{" "}
             for
