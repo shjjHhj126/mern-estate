@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 // {listing}:select listing from props
-export default function Contact({ listing }) {
+export default function Contact({ listing, contact, setContact }) {
   const [landlord, setLandlord] = useState(null);
   const [message, setMessage] = useState("");
 
@@ -13,6 +13,7 @@ export default function Contact({ listing }) {
         const res1 = await axios.get(`/api/user/${listing.userRef}`);
         const res = res1.data;
         setLandlord(res);
+        setContact(false);
       } catch (err) {
         console.log(err);
       }

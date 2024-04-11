@@ -138,20 +138,18 @@ export default function Listing() {
             </div>
 
             <div>
-              {currentUser &&
-                listing.userRef !== currentUser._id &&
-                !contact && (
-                  <div className="border border-solid border-gray-300 p-5 m-5 rounded-lg">
-                    <div className="p-5">
-                      <button className="bg-blue-500 text-white font-bold rounded-md p-3 hover:opacity-95 w-full">
-                        Request a tour
-                        <p className="font-normal text-sm">
-                          as early as today 11:00 am
-                        </p>
-                      </button>
-                    </div>
+              {currentUser && listing.userRef !== currentUser._id && (
+                <div className="border border-solid border-gray-300 p-5 m-5 rounded-lg">
+                  <div className="p-5">
+                    <button className="bg-blue-500 text-white font-bold rounded-md p-3 hover:opacity-95 w-full">
+                      Request a tour
+                      <p className="font-normal text-sm">
+                        as early as today 11:00 am
+                      </p>
+                    </button>
                   </div>
-                )}
+                </div>
+              )}
 
               {currentUser &&
                 listing.userRef !== currentUser._id &&
@@ -166,7 +164,13 @@ export default function Listing() {
                     </div>
                   </div>
                 )}
-              {contact && <Contact listing={listing} />}
+              {contact && (
+                <Contact
+                  listing={listing}
+                  contact={contact}
+                  setContact={setContact}
+                />
+              )}
             </div>
           </div>
         </div>
