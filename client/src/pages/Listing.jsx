@@ -1,11 +1,15 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Swiper, SwiperSlide } from "swiper/react";
-import SwiperCore from "swiper";
-import { Navigation } from "swiper/modules";
 import { useSelector } from "react-redux";
-import "swiper/css/bundle";
+
+import { Swiper, SwiperSlide } from "swiper/react";
+// Import Swiper styles
+import "swiper/css";
+import "swiper/css/navigation";
+import { Navigation } from "swiper/modules";
+import SwiperCore from "swiper";
+
 import {
   FaBath,
   FaBed,
@@ -18,7 +22,7 @@ import {
 import Contact from "../components/Contact";
 
 export default function Listing() {
-  SwiperCore.use([Navigation]);
+  SwiperCore.use(Navigation);
   const [listing, setListing] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
@@ -56,19 +60,26 @@ export default function Listing() {
         <p className="text-center my-7 text-2xl">something went wrong</p>
       )}
       {listing && !loading && !error && (
-        <div className="bg-white">
-          <Swiper navigation>
-            {listing.imageUrls.map((url) => (
-              <SwiperSlide key={url}>
-                <div
-                  className="h-full"
-                  style={{
-                    background: `url(${url}) center no-repeat`,
-                    backgroundSize: "cover",
-                  }}></div>
-              </SwiperSlide>
-            ))}
-          </Swiper>
+        <div className="bg-white w-full">
+          {/*image section */}
+          <div className=" w-full bg-gray-500">
+            <Swiper navigation style={{ height: "100%", width: "100%" }}>
+              {listing.imageUrls.map((url) => (
+                <SwiperSlide
+                  key={url}
+                  style={{ height: "100%", width: "100%" }}>
+                  <div
+                    style={{
+                      background: `url(${url}) center no-repeat`,
+                      backgroundSize: "cover",
+                    }}
+                    className="h-[500px] w-full" //why have to set to fix height or it will shrink to 0?
+                  />
+                </SwiperSlide>
+              ))}
+            </Swiper>
+          </div>
+          <hr />
           <p className="text-2xl font-serif p-3">{listing.name}</p>
           <div className="flex flex-col sm:flex-row">
             <div className=" flex flex-col max-w-4xl mx-auto p-3 my-7 gap-4">
@@ -125,12 +136,13 @@ export default function Listing() {
                 </li>
               </ul>
             </div>
+
             <div>
-              <div className="border border-solid border-gray-300 p-5 m-5 rounded-lg">
-                <div className="p-5">
-                  {currentUser &&
-                    listing.userRef !== currentUser._id &&
-                    !contact && (
+              {currentUser &&
+                listing.userRef !== currentUser._id &&
+                !contact && (
+                  <div className="border border-solid border-gray-300 p-5 m-5 rounded-lg">
+                    <div className="p-5">
                       <button
                         onClick={() => setContact(true)}
                         className="bg-blue-500 text-white font-bold rounded-md p-3 hover:opacity-95 w-full">
@@ -139,23 +151,24 @@ export default function Listing() {
                           as early as today 11:00 am
                         </p>
                       </button>
-                    )}
-                </div>
-              </div>
-              <div className="border border-solid border-gray-300 rounded-md p-5 m-5">
-                <div className="p-5">
-                  {currentUser &&
-                    listing.userRef !== currentUser._id &&
-                    !contact && (
+                    </div>
+                  </div>
+                )}
+
+              {currentUser &&
+                listing.userRef !== currentUser._id &&
+                !contact && (
+                  <div className="border border-solid border-gray-300 rounded-md p-5 m-5">
+                    <div className="p-5">
                       <button
                         onClick={() => setContact(true)}
                         className="bg-white border border-blue-500 text-blue-500 w-full rounded-lg p-3 hover:opacity-95 font-semibold">
                         Contact landlord
                       </button>
-                    )}
-                  {contact && <Contact listing={listing} />}
-                </div>
-              </div>
+                    </div>
+                  </div>
+                )}
+              {contact && <Contact listing={listing} />}
             </div>
           </div>
         </div>

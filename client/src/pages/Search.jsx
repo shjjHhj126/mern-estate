@@ -21,6 +21,7 @@ export default function Search() {
   const [positions, setPositions] = useState([]);
   const [showMore, setShowMore] = useState(false);
   const [map, setMap] = useState(null);
+  const [hoveredListingId, setHoveredListingId] = useState(null); //do not use let to declare, reassign it losing ref
   const navigate = useNavigate();
   const geocodingClient = mapboxSdk({
     accessToken: import.meta.env.VITE_MAP_TOKEN,
@@ -52,33 +53,146 @@ export default function Search() {
     });
 
     const markListingsOnMap = async () => {
-      for (const listing of listings) {
-        const query = `${listing.address}, ${listing.city}, ${listing.country}`;
+      if (hoveredListingId) {
+        const listing = listings.find((item) => item._id === hoveredListingId);
+        if (!listing) return;
+
+        const hoveredQuery = `${listing.address}, ${listing.city}, ${listing.country}`;
 
         try {
           const response = await geocodingClient
             .forwardGeocode({
-              query: query,
+              query: hoveredQuery,
               limit: 1,
             })
             .send();
 
-          const features = response.body.features;
+          const { center } = response.body.features[0];
 
-          if (features && features.length > 0) {
-            const [lng, lat] = features[0].center;
+          // Change the map center to the coordinates of the hovered listing
+          map.setCenter(center);
 
-            // Add marker
-            new mapboxgl.Marker().setLngLat([lng, lat]).addTo(map);
-          }
+          // Create a popup for the listing and display it
+          // const popup = new mapboxgl.Popup({
+          //   closeButton: false,
+          //   closeOnClick: false,
+          // }).setHTML(
+          //   `<img src=${listing.imageUrls[0]} height="100%" width="100%"/><strong>${listing.name}</strong></a>`
+          // );
+
+          // const marker = new mapboxgl.Marker()
+          //   .setLngLat(center)
+          //   .addTo(map)
+          //   .setPopup(popup);
+
+          // popup.addTo(map);
         } catch (error) {
           console.error("Error geocoding address:", error);
         }
+      } else {
+        const features = [];
+        for (const listing of listings) {
+          const query = `${listing.address}, ${listing.city}, ${listing.country}`;
+
+          try {
+            const response = await geocodingClient
+              .forwardGeocode({
+                query: query,
+                limit: 1,
+              })
+              .send();
+
+            const { center } = response.body.features[0];
+            features.push({
+              type: "Feature",
+              properties: {
+                listingId: listing._id,
+                description: `<img src=${listing.imageUrls[0]} height="100%" width="100%"/><strong>${listing.name}</strong></a>`,
+              },
+              geometry: {
+                type: "Point",
+                coordinates: center,
+              },
+            });
+          } catch (error) {
+            console.error("Error geocoding address:", error);
+          }
+        }
+
+        // Create a GeoJSON feature collection
+        const geojson = {
+          type: "FeatureCollection",
+          features: features,
+        };
+
+        // Remove existing "places" layer if it exists
+        if (map.getLayer("places")) {
+          map.removeLayer("places");
+        }
+
+        // Remove existing "places" source if it exists
+        if (map.getSource("places")) {
+          map.removeSource("places");
+        }
+
+        // Add GeoJSON source and layer to the map
+        map.addSource("places", {
+          type: "geojson",
+          data: geojson,
+        });
+
+        map.addLayer({
+          id: "places",
+          type: "circle",
+          source: "places",
+          paint: {
+            "circle-color": "#4264fb",
+            "circle-radius": 6,
+            "circle-stroke-width": 2,
+            "circle-stroke-color": "#ffffff",
+          },
+        });
+
+        // Create markers and popups for each feature
+        features.forEach((feature) => {
+          const popup = new mapboxgl.Popup({
+            closeButton: false,
+            closeOnClick: false,
+          }).setHTML(feature.properties.description);
+
+          const marker = new mapboxgl.Marker()
+            .setLngLat(feature.geometry.coordinates)
+            .addTo(map)
+            .setPopup(popup);
+
+          // Add mouseenter event listener to marker
+          marker.getElement().addEventListener("mouseenter", () => {
+            popup.addTo(map);
+          });
+
+          // Add mouseleave event listener to marker
+          marker.getElement().addEventListener("mouseleave", () => {
+            popup.remove();
+          });
+
+          // Add click event to open listing details
+          marker.getElement().addEventListener("click", () => {
+            const listingId = feature.properties.listingId;
+            navigate(`/listing/${listingId}`);
+          });
+        });
       }
     };
 
     markListingsOnMap();
-  }, [listings, map]);
+
+    map.on("load", markListingsOnMap);
+
+    // Clean up event listener
+    return () => {
+      map.off("load", markListingsOnMap);
+    };
+  }, [listings, map, hoveredListingId]);
 
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
@@ -124,6 +238,7 @@ export default function Search() {
     };
     fetchListings();
   }, [location.search]);
+
   const handleChange = (e) => {
     if (
       e.target.id === "all" ||
@@ -180,6 +295,15 @@ export default function Search() {
       setShowMore(false);
     }
     setListings([...listings, ...res]);
+  };
+
+  const handleMouseEnter = (listingId) => {
+    setHoveredListingId(listingId);
+  };
+
+  const handleMouseLeave = () => {
+    // console.log(hoveredListingId);
+    setHoveredListingId(null);
   };
 
   return (
@@ -319,7 +443,11 @@ export default function Search() {
             {!loading &&
               listings &&
               listings.map((listing) => (
-                <ListingItem key={listing._id} listing={listing} />
+                <div
+                  onMouseEnter={() => handleMouseEnter(listing._id)}
+                  onMouseLeave={handleMouseLeave}>
+                  <ListingItem key={listing._id} listing={listing} />
+                </div>
               ))}
             {showMore && (
               <button
