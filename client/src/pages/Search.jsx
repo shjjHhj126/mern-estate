@@ -213,7 +213,7 @@ export default function Search() {
       orderFromUrl
     ) {
       setSidebardata({
-        searchTerm: searchTermFromUrl || " ",
+        searchTerm: searchTermFromUrl || "",
         type: typeFromUrl || "all",
         parking: parkingFromUrl === "true" ? true : false,
         offer: offerFromUrl === "true" ? true : false,
