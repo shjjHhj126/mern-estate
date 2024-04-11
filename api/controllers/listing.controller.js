@@ -60,7 +60,6 @@ const getListing = async (req, res, next) => {
   }
 };
 const getListings = async (req, res, next) => {
-  console.log("req.query:", req.query);
   try {
     const limit = parseInt(req.query.limit) || 8;
     const startIndex = parseInt(req.query.startIndex) || 0;
@@ -99,9 +98,9 @@ const getListings = async (req, res, next) => {
       .limit(limit)
       .skip(startIndex);
 
-    console.log("listings", listings);
-    const listings_ = await Listing.find();
-    console.log("listings_.length", listings_.length);
+    // console.log("listings", listings);
+    // const listings_ = await Listing.find();
+    // console.log("listings_.length", listings_.length);
 
     return res.status(200).json(listings);
   } catch (err) {

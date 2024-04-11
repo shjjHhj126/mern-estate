@@ -226,10 +226,6 @@ export default function Search() {
     const fetchListings = async () => {
       setLoading(true);
       const searchQuery = urlParams.toString();
-      console.log(
-        "https://mern-estate-pce3.onrender.com" +
-          `/api/listing/get?${searchQuery}`
-      );
       try {
         const res1 = await axios.get(`/api/listing/get?${searchQuery}`);
         const res = res1.data;
