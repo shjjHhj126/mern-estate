@@ -7,7 +7,7 @@ import { initializeApp } from "firebase/app";
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY, //the way to use it in vite
   // authDomain: "mern-estate-345f5.firebaseapp.com",
-  authDomain: "mern-estate-345f5.firebaseapp.com",
+  authDomain: "“https://mern-estate-pce3.onrender.com”",
   projectId: "mern-estate-345f5",
   storageBucket: "mern-estate-345f5.appspot.com",
   messagingSenderId: "219484737527",
