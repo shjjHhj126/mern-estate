@@ -143,9 +143,7 @@ export default function Listing() {
                 !contact && (
                   <div className="border border-solid border-gray-300 p-5 m-5 rounded-lg">
                     <div className="p-5">
-                      <button
-                        onClick={() => setContact(true)}
-                        className="bg-blue-500 text-white font-bold rounded-md p-3 hover:opacity-95 w-full">
+                      <button className="bg-blue-500 text-white font-bold rounded-md p-3 hover:opacity-95 w-full">
                         Request a tour
                         <p className="font-normal text-sm">
                           as early as today 11:00 am
