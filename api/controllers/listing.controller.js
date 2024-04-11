@@ -99,7 +99,9 @@ const getListings = async (req, res, next) => {
       .limit(limit)
       .skip(startIndex);
 
-    console.log(listings);
+    console.log("listings", listings);
+    const listings_ = await Listing.find();
+    console.log("listings_.length", listings_.length);
 
     return res.status(200).json(listings);
   } catch (err) {
