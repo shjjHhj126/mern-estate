@@ -67,7 +67,7 @@ export default function Home() {
       {/* top*/}
       <div className="relative flex items-center justify-center">
         <img
-          src="https://assets-global.website-files.com/619e763bb3de7b56e6107aeb/61f2b0e1f0a732ae15de4d98_open-house-ideas-header-image-scaled.jpeg"
+          src="https://firebasestorage.googleapis.com/v0/b/mern-estate-345f5.appspot.com/o/61f2b0e1f0a732ae15de4d98_open-house-ideas-header-image-scaled.jpeg?alt=media&token=9a61bd20-c808-4d78-b3c6-944d6c805d25"
           alt="loading home image..."
           className="h-[250px] sm:h-[500px] object-cover w-full mx-auto brightness-75 "></img>
         <div className="absolute flex flex-col items-center z-10 w-full px-4 sm:w-1/2">
