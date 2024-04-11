@@ -8,11 +8,11 @@ const cookieParser = require("cookie-parser");
 const path = require("path");
 const cors = require("cors");
 
-// dotenv.config({ path: "config.env" });
-dotenv.config();
+dotenv.config({ path: "config.env" });
+// dotenv.config();
 
 //create a dynamic path : __dirname
-// const cur_dir = path.resolve();
+const cur_dir = path.resolve();
 
 //connect to db, mongoose.connect returns a promise
 mongoose
@@ -47,11 +47,11 @@ app.use("/api/auth", authRouter);
 app.use("/api/listing", listingRouter);
 
 //create static path
-// app.use(express.static(path.join(cur_dir, "/client/dist")));
+app.use(express.static(path.join(cur_dir, "/client/dist")));
 
-// app.get("*", (req, res) => {
-//   res.sendFile(path.join(cur_dir, "client/dist/index.html"));
-// });
+app.get("*", (req, res) => {
+  res.sendFile(path.join(cur_dir, "client/dist/index.html"));
+});
 
 //error handling middleware
 //use next to go to the next middleware
