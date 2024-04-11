@@ -29,7 +29,8 @@ const app = express();
 app.use(express.json()); //to allow jsoon as input as the server
 app.use(
   cors({
-    origin: "http://localhost:5173", //the frontend port, idk why
+    // origin: "http://localhost:5173", //the frontend port, idk why
+    origin: "mern-estate-pce3.onrender.com",
     credentials: true,
   })
 ); //default:allow from anywhere

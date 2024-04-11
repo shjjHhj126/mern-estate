@@ -13,7 +13,7 @@ const listingRouter = express.Router();
 listingRouter.post("/create", verifyToken, createListing);
 listingRouter.delete("/delete/:id", verifyToken, deleteListing);
 listingRouter.put("/update/:id", verifyToken, updateListing);
-listingRouter.get("/get/:id", verifyToken, getListing);
-listingRouter.get("/get", verifyToken, getListings);
+listingRouter.get("/get/:id", getListing);
+listingRouter.get("/get", getListings);
 
 module.exports = listingRouter;
