@@ -243,14 +243,14 @@ export default function Profile() {
           <Link
             className="bg-[#007FFF] p-3 text-white rounded-lg text-center uppercase"
             to={"/create-listing"}>
-            Create Listing
+            Create Estate Card
           </Link>
           <button
             type="button"
             hidden={listings}
             onClick={handleShowListings}
             className="bg-[#0000FF]  p-3 text-white rounded-lg text-center uppercase">
-            Show Listings
+            Show My Estate Cards
           </button>
         </form>
 
