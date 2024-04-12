@@ -278,7 +278,7 @@ export default function Profile() {
         {listings && listings.length > 0 && (
           <div className=" flex flex-col gap-4">
             <h1 className="text-center mt-7 text-2xl font-semibold">
-              Your Listings
+              Your Estate Cards
             </h1>
             {listings.map((listing) => {
               return (
